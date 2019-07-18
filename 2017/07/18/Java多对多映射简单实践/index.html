@@ -1,172 +1,107 @@
-<!DOCTYPE html>
-<html>
-  <!-- Html Head Tag-->
-  <head><meta name="generator" content="Hexo 3.9.0">
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content>
-  <meta name="author" content="Wu Huan">
-  <!-- Open Graph Data -->
-  <meta property="og:title" content="Java多对多映射简单实践">
-  <meta property="og:description" content="晚安">
-  <meta property="og:site_name" content="Hexo">
-  <meta property="og:type" content="article">
-  <meta property="og:image" content="http://yoursite.com">
-  
-    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="/favicon.png">
-  
+extends includes/layout.pug
 
-  <!-- Site Title -->
-  <title>Hexo</title>
+block top_img
+  - var top_img = page.top_img || theme.post_meta.top_img || theme.top_img || config.top_img
+  if (top_img && page.top_img !== false)
+    - var bg_img = top_img !== true ? `background-image: url(${top_img})` : ''
+    - var flag = top_img === true ? 'no-bg' : ''
+    div#top-container(style=bg_img class=flag)
+      include ./includes/header.pug
+      #post-info
+        #post-title= page.title || _p('no_title')
+        #post-meta
+          if (theme.post_meta.date_type)
+            if (theme.post_meta.date_type === 'both')
+              time.post-meta__date
+                i.fa.fa-calendar(aria-hidden="true")
+                =' '+_p('post.created')+' '+date(page.date, config.date_format)
+                span.post-meta__separator |
+                i.fa.fa-calendar-check-o(aria-hidden="true")
+                =' '+_p('post.updated')+' '+date(page.updated, config.date_format)
+            else
+              - var date_type = theme.post_meta.date_type === 'updated' ? 'updated' : 'date'
+              time.post-meta__date #[i.fa.fa-calendar(aria-hidden="true")] #[=date(page[date_type], config.date_format)]
+          if (theme.post_meta.categories && page.categories.data.length > 0)
+            if (theme.post_meta.date_type)
+              span.post-meta__separator |
+            each item, index in page.categories.data
+              i.fa.fa-inbox.post-meta__icon(aria-hidden="true")
+              a(href=url_for(item.path)).post-meta__categories #[=item.name]
+              if (index < page.categories.data.length - 1)
+                 i.fa.fa-angle-right(aria-hidden="true")
+          if (theme.disqus.enable && theme.disqus.count)
+            if (theme.post_meta.date_type || theme.post_meta.categories && page.categories.data.length > 0)
+              span.post-meta__separator |
+            i.fa.fa-comment-o.post-meta__icon(aria-hidden="true")
+            a(href=url_for(page.path) + '#disqus_thread')
+              span.disqus-comment-count(data-disqus-identifier=page.path)
+          if (theme.wordcount && theme.wordcount.enable)
+            .post-meta-wordcount
+              span= _p('post.wordcount') + ': '
+              span.word-count= wordcount(page.content)
+              span.post-meta__separator |
+              span= _p('post.min2read', min2read(page.content, {cn: 350, en: 160}))
+  else
+    div#top-container.plain
+      include ./includes/header.pug
 
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="/css/bootstrap.min.css">
-  <!-- Custom CSS -->
-  
-  <link rel="stylesheet" href="/css/style.light.css">
-
-  <!-- Google Analytics -->
-  
-
-</head>
-
-  <body>
-    <!-- Page Header -->
-
-
-<header class="site-header header-background" style="background-image: url(/img/default-banner-dark.jpg)">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-        <div class="page-title with-background-image">
-          <p class="title">Java多对多映射简单实践</p>
-          <p class="subtitle"></p>
-        </div>
-        <div class="site-menu with-background-image">
-          <ul>
-            
-              <li>
-                <a href="/">
-                  
-                  Home
-                  
-                </a>
-              </li>
-            
-              <li>
-                <a href="/archives">
-                  
-                  Archives
-                  
-                </a>
-              </li>
-            
-              <li>
-                <a href="https://github.com/<your-github-username>">
-                  
-                  Github
-                  
-                </a>
-              </li>
-            
-              <li>
-                <a href="mailto:wuhuan2333@163.com">
-                  
-                  Email
-                  
-                </a>
-              </li>
-            
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-</header>
-
-<article>
-  <div class="container typo">
-    <div class="row">
-      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-        <div class="post-info text-muted">
-          
-            <!-- Author -->
-            <span class="author info">By Wu Huan</span>
-          
-          <!-- Date -->
-          <span class="date-time info">On
-            <span class="date">2017-07-18</span>
-            <span class="time">20:54:55</span>
-          </span>
-          
-        </div>
-        <!-- Tags -->
-        
-          <div class="post-tags text-muted">
-            Tags: 
-
-<a class="tag" href="/tags/Java/">#Java</a>
-
-
-          </div>
-        
-        <!-- Post Main Content -->
-        <div class="post-content">
-          <blockquote>
-<blockquote>
-<p>用一个简单的Java多对多映射联系来加深一下Java面向对象的思想</p>
-</blockquote>
-</blockquote>
-<h1 id="数据映射关系"><a href="#数据映射关系" class="headerlink" title="数据映射关系"></a>数据映射关系</h1><p><img src="F:%5Cblog%5Csource_posts%5CJava%E5%A4%9A%E5%AF%B9%E5%A4%9A%E6%98%A0%E5%B0%84%E7%AE%80%E5%8D%95%E5%AE%9E%E8%B7%B5%5C%E6%98%A0%E5%B0%84%E5%85%B3%E7%B3%BB.jpg" alt="数据映射"></p>
-<h1 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h1><p><img src="Java%E5%A4%9A%E5%AF%B9%E5%A4%9A%E6%98%A0%E5%B0%84%E7%AE%80%E5%8D%95%E5%AE%9E%E8%B7%B5%5C%E9%A2%98%E7%9B%AE.jpg" alt="题目"></p>
-<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br></pre></td><td class="code"><pre><span class="line">package demo;</span><br><span class="line"></span><br><span class="line">class Member &#123;</span><br><span class="line">	private long mid;</span><br><span class="line">	private String name;</span><br><span class="line">	</span><br><span class="line">	public Member(long mid ,String name) &#123;</span><br><span class="line">		this.mid = mid;</span><br><span class="line">		this.name = name;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public String getInfo() &#123;</span><br><span class="line">		return &quot;用户id：&quot; + this.mid + &quot;、用户姓名:&quot; + this.name;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public Role roles[];</span><br><span class="line">	</span><br><span class="line">	public void setRoles(Role roles[]) &#123;</span><br><span class="line">		this.roles = roles;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public Role[] getRoles() &#123;</span><br><span class="line">		return this.roles;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Role &#123;</span><br><span class="line">	private long rid;</span><br><span class="line">	private String name;</span><br><span class="line">	private Member members[];</span><br><span class="line">	private Quanx quanx[];</span><br><span class="line">	</span><br><span class="line">	public Role(long rid ,String name) &#123;</span><br><span class="line">		this.rid = rid;</span><br><span class="line">		this.name = name;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public String getInfo() &#123;</span><br><span class="line">		return &quot;角色id：&quot; + this.rid + &quot;、角色姓名:&quot; + this.name;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public void setMembers(Member members[]) &#123;</span><br><span class="line">		this.members = members;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public Member[] getMembers() &#123;</span><br><span class="line">		return this.members;</span><br><span class="line">	&#125;</span><br><span class="line">	public void setQuanx(Quanx quanx[]) &#123;</span><br><span class="line">		this.quanx = quanx;</span><br><span class="line">	&#125;</span><br><span class="line">	public Quanx []getQuanx() &#123;</span><br><span class="line">		return this.quanx;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Quanx &#123;</span><br><span class="line">	private long qid;</span><br><span class="line">	private String name;</span><br><span class="line">	private Role roles;</span><br><span class="line">	public Quanx(long qid ,String name) &#123;</span><br><span class="line">		this.qid = qid;</span><br><span class="line">		this.name = name;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getInfo() &#123;</span><br><span class="line">		return &quot;权限id：&quot; + this.qid + &quot;、权限姓名:&quot; + this.name;</span><br><span class="line">	</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	public void setRoles(Role roles) &#123;</span><br><span class="line">		this.roles = roles;</span><br><span class="line">	&#125;</span><br><span class="line">	public Role getRoles()&#123;</span><br><span class="line">		return this.roles;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class demo &#123;</span><br><span class="line">	public static void main(String args[]) &#123;</span><br><span class="line">		//new用户</span><br><span class="line">		Member memA = new Member(1L,&quot;用户A&quot;);</span><br><span class="line">		Member memB = new Member(2L,&quot;用户B&quot;);</span><br><span class="line">		Member memC = new Member(3L,&quot;用户C&quot;);</span><br><span class="line">		//new角色</span><br><span class="line">		Role roleA = new Role(1L,&quot;角色A&quot;);</span><br><span class="line">		Role roleB = new Role(2L,&quot;角色B&quot;);</span><br><span class="line">		Role roleC = new Role(2L,&quot;角色C&quot;);</span><br><span class="line">		//new权限</span><br><span class="line">		Quanx quanxA1 = new Quanx(1001L,&quot;权限A1&quot;);</span><br><span class="line">		Quanx quanxA2 = new Quanx(1002L,&quot;权限A2&quot;);</span><br><span class="line">		Quanx quanxB1 = new Quanx(2001L,&quot;权限B1&quot;);</span><br><span class="line">		Quanx quanxB2 = new Quanx(2002L,&quot;权限B2&quot;);</span><br><span class="line">		Quanx quanxB3 = new Quanx(2003L,&quot;权限B3&quot;);</span><br><span class="line">		Quanx quanxC1 = new Quanx(3001L,&quot;权限C1&quot;);</span><br><span class="line">		Quanx quanxC2 = new Quanx(3002L,&quot;权限C2&quot;);</span><br><span class="line">	    //用户赋予角色</span><br><span class="line">		memA.setRoles(new Role[]&#123;roleA,roleB&#125;);</span><br><span class="line">		memB.setRoles(new Role[] &#123;roleB,roleC&#125;);</span><br><span class="line">		memC.setRoles(new Role[] &#123;roleA,roleC&#125;);</span><br><span class="line">		//角色使用权限</span><br><span class="line">		roleA.setQuanx(new Quanx[] &#123;quanxA1,quanxA2&#125;);</span><br><span class="line">		roleB.setQuanx(new Quanx[] &#123;quanxB1,quanxB2,quanxB3&#125;);</span><br><span class="line">		roleC.setQuanx(new Quanx[] &#123;quanxC1,quanxC2&#125;);</span><br><span class="line">		//角色赋予用户</span><br><span class="line">		roleA.setMembers(new Member[] &#123;memA,memB&#125;);</span><br><span class="line">		roleC.setMembers(new Member[] &#123;memB,memC&#125;);</span><br><span class="line">		roleB.setMembers(new Member[] &#123;memA,memB&#125;);</span><br><span class="line">		//权限给角色</span><br><span class="line">		quanxA1.setRoles(roleA);</span><br><span class="line">		quanxA2.setRoles(roleA);</span><br><span class="line">		quanxB1.setRoles(roleB);</span><br><span class="line">		quanxB2.setRoles(roleB);</span><br><span class="line">		quanxB3.setRoles(roleB);</span><br><span class="line">		quanxC1.setRoles(roleC);</span><br><span class="line">		quanxC2.setRoles(roleC);</span><br><span class="line">		System.out.println(&quot;---------根据用户找角色--------------&quot;);</span><br><span class="line">		System.out.println(memA.getInfo());</span><br><span class="line">		for(int x = 0;x&lt;memA.getRoles().length;x++) &#123;</span><br><span class="line">			System.out.println(&quot;\t-|所拥有角色 &quot;+memA.getRoles()[x].getInfo());</span><br><span class="line">			for(int y = 0;y&lt;memA.getRoles()[x].getQuanx().length;y++) &#123;</span><br><span class="line">				System.out.println(&quot;\t\t-|角色所拥有的权限 &quot; + memA.getRoles()[x].getQuanx()[y].getInfo());</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(&quot;---------根据角色找权限--------------&quot;);</span><br><span class="line">		System.out.println(roleA.getInfo());</span><br><span class="line">		for(int x = 0;x&lt;roleA.getMembers().length;x++) &#123;</span><br><span class="line">			System.out.println(&quot;\t-|拥有该角色的用户：&quot;+roleA.getMembers()[x].getInfo());</span><br><span class="line">		&#125;</span><br><span class="line">		for(int x = 0;x&lt;roleA.getQuanx().length;x++) &#123;</span><br><span class="line">			System.out.println(&quot;\t-|该角色所拥有的权限&quot; + roleA.getQuanx()[x].getInfo());</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(&quot;---------根据权限找用户所具备的信息--------------&quot;);</span><br><span class="line">		System.out.println(quanxA1.getInfo());</span><br><span class="line">		for(int x = 0;x&lt;quanxA1.getRoles().getMembers().length;x++) &#123;</span><br><span class="line">			System.out.println(&quot;\t-|可以使用该权限的用户&quot;+quanxA1.getRoles().getMembers()[x].getInfo());</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>在开发中遇到多对多映射的情况分为一下几个步骤行动：</p>
-<p>1.先写主要的类，确定类中的基本属性</p>
-<p>2.根据表中多对多的关系，在类中补充属性</p>
-<p>3.根据结构设置对象数据</p>
-<p>4.根据要求获取数据</p>
-
-        </div>
-      </div>
-    </div>
-  </div>
-</article>
-
-
-
-    <!-- Footer -->
-<footer>
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-        <p class="copyright text-muted">
-          Theme By <a target="_blank" href="https://github.com/levblanc">Levblanc.</a>
-          Inspired By <a target="_blank" href="https://github.com/klugjo/hexo-theme-clean-blog">Clean Blog.</a>
-        <p class="copyright text-muted">
-          Powered By <a target="_blank" href="https://hexo.io/">Hexo.</a>
-        </p>
-      </div>
-    </div>
-  </div>
-</footer>
-
-
-    <!-- After Footer Scripts -->
-<script src="/js/highlight.pack.js"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", function(event) {
-    var codeBlocks = Array.prototype.slice.call(document.getElementsByTagName('pre'))
-    codeBlocks.forEach(function(block, index) {
-      hljs.highlightBlock(block);
-    });
-  });
-</script>
-
-  </body>
-</html>
-
+block content
+  article#post(class="")
+    if (!top_img)
+      #post-title.plain= page.title || _p('no_title')
+      #post-meta
+        if (theme.post_meta.date_type)
+          - var date_type = theme.post_meta.date_type === 'updated' ? '' : 'date'
+          time.post-meta__date #[i.fa.fa-calendar(aria-hidden="true")] #[=date(page[date_type], config.date_format)]
+        if (theme.post_meta.categories && page.categories.data.length > 0)
+          if (theme.post_meta.date_type)
+            span.post-meta__separator |
+          each item, index in page.categories.data
+            i.fa.fa-inbox(aria-hidden="true")
+            a(href=url_for(item.path)).post-meta__categories  #[=item.name]
+            if (index < page.categories.data.length - 1)
+                i.fa.fa-angle-right.post-meta__separator(aria-hidden="true")
+        if (theme.disqus.enable && theme.disqus.count)
+          if (theme.post_meta.date_type || theme.post_meta.categories && page.categories.data.length > 0)
+            span.post-meta__separator |
+          i.fa.fa-comment-o(aria-hidden="true")
+          a(href=url_for(page.path) + '#disqus_thread')
+            span.disqus-comment-count(data-disqus-identifier=page.path)
+        if (theme.wordcount && theme.wordcount.enable)
+          span.post-meta__separator |
+          span.post-meta-wordcount
+            span= _p('post.wordcount') + ': '
+            span.word-count= wordcount(page.content)
+            span.post-meta__separator |
+            span= _p('post.min2read', min2read(page.content, {cn: 350, en: 160}))
+    #post-content.article-container!= page.content
+  if (theme.post_copyright && theme.post_copyright.enable)
+    .post-copyright
+      .post-copyright__author
+        span.post-copyright-meta= _p('post.copyright.author') + ": "
+        span.post-copyright-info
+          a(href=`mailto:${config.email}`) #[=config.author]
+      .post-copyright__type
+        span.post-copyright-meta= _p('post.copyright.link') + ": "
+        span.post-copyright-info
+          a(href=url_for(page.permalink)) #[=page.permalink]
+      .post-copyright__notice
+        span.post-copyright-meta= _p('post.copyright.copyright_notice') + ": "
+        span.post-copyright-info!= _p('post.copyright.copyright_content', theme.post_copyright.license_url, theme.post_copyright.license, config.url, config.title)
+  if (theme.post_meta.tags)
+    .post-meta__tag-list
+      each item, index in page.tags.data
+        a(href=url_for(item.path)).post-meta__tags #[=item.name]
+  if (theme.QR_code)
+    if (theme.QR_code.length > 0)
+      .post-qr-code
+        each item in theme.QR_code
+          .post-qr-code-item
+            img.post-qr-code__img(src=(item.itemlist||item).img)
+            .post-qr-code__desc=(item.itemlist||item).text
+  include includes/share/index.pug
+  include includes/pagination.pug
+  if (theme.adv && theme.adv.enable)
+    .post-adv!= theme.adv.info
+  if page.comments !== false
+    include includes/comments/index.pug
