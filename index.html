@@ -1187,7 +1187,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/06/hello-world/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/17/JDK的安装与部署/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Wu Huan">
@@ -1206,7 +1206,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2017/04/06/hello-world/" itemprop="url">Hello World</a></h1>
+                <a class="post-title-link" href="/2017/04/17/JDK的安装与部署/" itemprop="url">JDK的安装与部署</a></h1>
         
 
         <div class="post-meta">
@@ -1218,8 +1218,157 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-06T02:01:01+08:00">
-                2017-04-06
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-17T20:37:20+08:00">
+                2017-04-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="安装JDK"><a href="#安装JDK" class="headerlink" title="安装JDK"></a>安装JDK</h1><p>欲开始Java的开发之旅，需要首先安装Java的开发环境。一般而言，Java的开发环境指的就是JDK (Java Development Kit)。</p>
+<h2 id="下载并安装JDK"><a href="#下载并安装JDK" class="headerlink" title="下载并安装JDK"></a>下载并安装JDK</h2><p>首先，请访问<a href="https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html" target="_blank" rel="noopener">这个链接</a>并选择你的操作系统对应的安装包。</p>
+<p>例如，你的操作系统是64位的Windows，那么就选择<code>Windows x64</code>，如图所示。</p>
+<p><img src="https://www.runoob.com/wp-content/uploads/2013/12/java-download-1.jpg" alt="1"></p>
+<p>下载完成后，一路点击下一步即可。</p>
+<h2 id="配置环境变量"><a href="#配置环境变量" class="headerlink" title="配置环境变量"></a>配置环境变量</h2><p>安装完成后，右击<code>我的电脑</code>，点击<code>属性</code>，选择<code>高级系统设置</code>：</p>
+<p><img src="https://www.runoob.com/wp-content/uploads/2013/12/win-java1.png" alt="1"></p>
+<p>选择<code>高级</code>选项卡，点击<code>环境变量</code>：</p>
+<p><img src="https://www.runoob.com/wp-content/uploads/2013/12/java-win2.png" alt="1"></p>
+<p>得到如图所示的画面：</p>
+<p><img src="https://www.runoob.com/wp-content/uploads/2013/12/java-win3.png" alt="1"></p>
+<p>在<code>系统变量</code>栏中设置两个变量<code>JAVA_HOME</code>和<code>Path</code>，注意：</p>
+<ul>
+<li><strong>大小写无所谓！</strong> </li>
+<li><strong>若已存在则点击<code>编辑</code>，不存在则点击<code>新建</code>！</strong></li>
+</ul>
+<p><code>JAVA_HOME</code>和<code>PATH</code>的值分别是：</p>
+<h3 id="JAVA-HOME"><a href="#JAVA-HOME" class="headerlink" title="JAVA_HOME"></a><code>JAVA_HOME</code></h3><p>指向你的JDK的安装目录，例如<code>C:\Program Files\Java\jdk1.8.0_211</code>，如图所示：</p>
+<p><img src="https://www.runoob.com/wp-content/uploads/2013/12/java-win4.png" alt="1"><br><img src="https://www.runoob.com/wp-content/uploads/2013/12/java-win5.png" alt="1"></p>
+<h3 id="Path"><a href="#Path" class="headerlink" title="Path"></a><code>Path</code></h3><p>如果<code>Path</code>变量已经存在，点击<code>编辑</code>，在原先的值之前添加<code>%JAVA_HOME%\bin;</code></p>
+<p>如果<code>Path</code>变量不存在，点击<code>新建</code>，设置值为<code>%JAVA_HOME%\bin</code></p>
+<h4 id="Windows-7"><a href="#Windows-7" class="headerlink" title="Windows 7"></a>Windows 7</h4><p><img src="https://www.runoob.com/wp-content/uploads/2013/12/java-win6.png" alt="1"></p>
+<p><img src="https://www.runoob.com/wp-content/uploads/2013/12/java-win7.png" alt="1"></p>
+<h4 id="Windows-10"><a href="#Windows-10" class="headerlink" title="Windows 10"></a>Windows 10</h4><p><img src="https://www.runoob.com/wp-content/uploads/2013/12/44A70696-B2E6-4055-B88F-7FC0222DCCA4.png" alt="1"></p>
+<h2 id="重启计算机"><a href="#重启计算机" class="headerlink" title="重启计算机"></a>重启计算机</h2><p>完成后，请重启你的电脑</p>
+<h2 id="测试JDK是否安装成功"><a href="#测试JDK是否安装成功" class="headerlink" title="测试JDK是否安装成功"></a>测试JDK是否安装成功</h2><ul>
+<li><code>开始</code> -&gt; <code>运行</code>，键入<code>cmd</code>；</li>
+<li>键入命令: <code>java -version</code>，出现以下信息，说明你已经成功地完成了Java的安装！</li>
+</ul>
+<p><img src="https://www.runoob.com/wp-content/uploads/2013/12/java-win9.png" alt="1"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/19/hello-world/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wu Huan">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/head.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wan An">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/03/19/hello-world/" itemprop="url">Hello World</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-19T22:39:12+08:00">
+                2017-03-19
               </time>
             
 
@@ -1354,7 +1503,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
