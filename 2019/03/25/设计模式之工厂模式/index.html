@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="一位不愿意透漏姓名的伍欢先生的Blog">
+<meta name="description" content="package demo; import java.lang.reflect.InvocationTargetException; interface IMessage {    public void send();} interface IService {    public void service();} class CloundMessage implements IMessage {">
 <meta property="og:type" content="article">
 <meta property="og:title" content="设计模式之工厂模式">
 <meta property="og:url" content="http://yoursite.com/2019/03/25/设计模式之工厂模式/index.html">
 <meta property="og:site_name" content="Wan An">
-<meta property="og:description" content="一位不愿意透漏姓名的伍欢先生的Blog">
+<meta property="og:description" content="package demo; import java.lang.reflect.InvocationTargetException; interface IMessage {    public void send();} interface IService {    public void service();} class CloundMessage implements IMessage {">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-09-12T03:16:01.773Z">
+<meta property="og:updated_time" content="2019-10-07T06:31:35.597Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="设计模式之工厂模式">
-<meta name="twitter:description" content="一位不愿意透漏姓名的伍欢先生的Blog">
+<meta name="twitter:description" content="package demo; import java.lang.reflect.InvocationTargetException; interface IMessage {    public void send();} interface IService {    public void service();} class CloundMessage implements IMessage {">
 
 
 
@@ -329,7 +329,55 @@
       
 
       
-        
+        <p>package demo;</p>
+<p>import java.lang.reflect.InvocationTargetException;</p>
+<p>interface IMessage {<br>    public void send();<br>}</p>
+<p>interface IService {<br>    public void service();<br>}</p>
+<p>class CloundMessage implements IMessage {</p>
+<pre><code>@Override
+public void send() {
+    System.out.println(&quot;【发送】云消息&quot;);
+}</code></pre><p>}</p>
+<p>class ChMessage implements IMessage {</p>
+<pre><code>@Override
+public void send() {
+    System.out.println(&quot;【发送】中文消息&quot;);
+
+}</code></pre><p>}</p>
+<p>class CloudService implements IService {</p>
+<pre><code>@Override
+public void service() {
+    System.out.println(&quot;【服务】云服务&quot;);
+}</code></pre><p>}</p>
+<p>class ChService implements IService {</p>
+<pre><code>@Override
+public void service() {
+    System.out.println(&quot;【服务】中文服务&quot;);
+}</code></pre><p>}</p>
+<p>class Factory {<br>    private Factory() {<br>    };</p>
+<pre><code>@SuppressWarnings(&quot;unchecked&quot;)
+public static &lt;T&gt; T getInstense(String classname, Class&lt;T&gt; clazz) {
+    T instense = null;
+    try {
+        instense = (T) Class.forName(classname).getDeclaredConstructor().newInstance();
+    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+            | NoSuchMethodException | SecurityException | ClassNotFoundException e) {
+        e.printStackTrace();
+    }
+    return instense;
+}</code></pre><p>}</p>
+<p>public class demo {</p>
+<pre><code>public static void main(String[] args) {
+    IMessage clmsg = Factory.getInstense(&quot;demo.CloundMessage&quot;, IMessage.class);
+    IMessage chmsg = Factory.getInstense(&quot;demo.ChMessage&quot;, IMessage.class);
+    IService clser = Factory.getInstense(&quot;demo.CloudService&quot;, IService.class);
+    IService chser = Factory.getInstense(&quot;demo.ChService&quot;, IService.class);
+    clser.service();
+    chser.service();
+    chmsg.send();
+    clmsg.send();
+}</code></pre><p>}</p>
+
       
     </div>
     

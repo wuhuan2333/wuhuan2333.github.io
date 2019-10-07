@@ -333,7 +333,55 @@
       
         
           
-            
+            <p>package demo;</p>
+<p>import java.lang.reflect.InvocationTargetException;</p>
+<p>interface IMessage {<br>    public void send();<br>}</p>
+<p>interface IService {<br>    public void service();<br>}</p>
+<p>class CloundMessage implements IMessage {</p>
+<pre><code>@Override
+public void send() {
+    System.out.println(&quot;【发送】云消息&quot;);
+}</code></pre><p>}</p>
+<p>class ChMessage implements IMessage {</p>
+<pre><code>@Override
+public void send() {
+    System.out.println(&quot;【发送】中文消息&quot;);
+
+}</code></pre><p>}</p>
+<p>class CloudService implements IService {</p>
+<pre><code>@Override
+public void service() {
+    System.out.println(&quot;【服务】云服务&quot;);
+}</code></pre><p>}</p>
+<p>class ChService implements IService {</p>
+<pre><code>@Override
+public void service() {
+    System.out.println(&quot;【服务】中文服务&quot;);
+}</code></pre><p>}</p>
+<p>class Factory {<br>    private Factory() {<br>    };</p>
+<pre><code>@SuppressWarnings(&quot;unchecked&quot;)
+public static &lt;T&gt; T getInstense(String classname, Class&lt;T&gt; clazz) {
+    T instense = null;
+    try {
+        instense = (T) Class.forName(classname).getDeclaredConstructor().newInstance();
+    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+            | NoSuchMethodException | SecurityException | ClassNotFoundException e) {
+        e.printStackTrace();
+    }
+    return instense;
+}</code></pre><p>}</p>
+<p>public class demo {</p>
+<pre><code>public static void main(String[] args) {
+    IMessage clmsg = Factory.getInstense(&quot;demo.CloundMessage&quot;, IMessage.class);
+    IMessage chmsg = Factory.getInstense(&quot;demo.ChMessage&quot;, IMessage.class);
+    IService clser = Factory.getInstense(&quot;demo.CloudService&quot;, IService.class);
+    IService chser = Factory.getInstense(&quot;demo.ChService&quot;, IService.class);
+    clser.service();
+    chser.service();
+    chmsg.send();
+    clmsg.send();
+}</code></pre><p>}</p>
+
           
         
       
